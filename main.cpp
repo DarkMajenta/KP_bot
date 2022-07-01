@@ -16,88 +16,18 @@
 #include <cstdlib>
 #include <exception>
 #include <string>
-#include <nlohmann/json.hpp>
-#include <curl/curl.h>
 #include <tgbot/tgbot.h>
 //#include "get_weather.h"
 #include "get_request.h"
+#include "get_currency.h"
+#include "get_time_as_str.h"
+#include "download_jpeg.h"
+
 
 using namespace std;
 using namespace TgBot;
 
 vector<string> bot_commands= {"start", "echo", "time", "currency", "random_cat", "weather"};
-
-float get_currency(char what)
-{
-    auto js_obj = nlohmann::json::parse(get_request("https://www.cbr-xml-daily.ru/daily_json.js"));
-
-    if (what=='u'){
-        return js_obj["Valute"]["USD"]["Value"].get<float>();
-    }
-    else{
-        return js_obj["Valute"]["KZT"]["Value"].get<float>();
-    }
-    return -1;
-}
-
-string get_time_as_str()
-{
-    time_t now = time(NULL);
-    tm* ptr = localtime(&now);
-    char buf[32];
-    strftime(buf, 32, "%c", ptr);
-    return buf;
-}
-
-size_t callbackfunction(void *ptr, size_t size, size_t nmemb, void* userdata)
-{
-    FILE* stream = (FILE*)userdata;
-    if (!stream)
-    {
-        printf("!!! No stream\n");
-        return 0;
-    }
-
-    size_t written = fwrite((FILE*)ptr, size, nmemb, stream);
-    return written;
-}
-
-bool download_jpeg(char* url)
-{
-    FILE* fp = fopen("out.jpg", "wb");
-    if (!fp)
-    {
-        printf("!!! Failed to create file on the disk\n");
-        return false;
-    }
-
-    CURL* curlCtx = curl_easy_init();
-    curl_easy_setopt(curlCtx, CURLOPT_URL, url);
-    curl_easy_setopt(curlCtx, CURLOPT_WRITEDATA, fp);
-    curl_easy_setopt(curlCtx, CURLOPT_WRITEFUNCTION, callbackfunction);
-    curl_easy_setopt(curlCtx, CURLOPT_FOLLOWLOCATION, 1);
-
-    CURLcode rc = curl_easy_perform(curlCtx);
-    if (rc)
-    {
-        printf("!!! Failed to download: %s\n", url);
-        return false;
-    }
-
-    long res_code = 0;
-    curl_easy_getinfo(curlCtx, CURLINFO_RESPONSE_CODE, &res_code);
-    if (!((res_code == 200 || res_code == 201) && rc != CURLE_ABORTED_BY_CALLBACK))
-    {
-        printf("!!! Response code: %ld\n", res_code);
-        return false;
-    }
-
-    curl_easy_cleanup(curlCtx);
-
-    fclose(fp);
-
-    return true;
-}
 
 int main()
 {
