@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string>
-#include "get_request.h"
 #include <nlohmann/json.hpp>
+#include "get_request.h"
 
 float get_currency(char what)
 {

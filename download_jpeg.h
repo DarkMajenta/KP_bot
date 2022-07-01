@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <curl/curl.h>
 
-
 size_t callbackfunction(void *ptr, size_t size, size_t nmemb, void* userdata)
 {
     FILE* stream = (FILE*)userdata;

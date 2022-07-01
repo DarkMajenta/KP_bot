@@ -1,5 +1,13 @@
 #include <stdio.h>
 #include <string>
+#include <iostream>
+#include <stdio.h>
+#include <vector>
+#include <ctime>
+#include <csignal>
+#include <cstdio>
+#include <cstdlib>
+#include <exception>
 #include <curl/curl.h>
 
 using namespace std;

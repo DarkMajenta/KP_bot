@@ -18,7 +18,7 @@
 #include <string>
 #include <tgbot/tgbot.h>
 //#include "get_weather.h"
-#include "get_request.h"
+//#include "get_request.h"
 #include "get_currency.h"
 #include "get_time_as_str.h"
 #include "download_jpeg.h"
@@ -29,9 +29,10 @@ using namespace TgBot;
 
 vector<string> bot_commands= {"start", "echo", "time", "currency", "random_cat", "weather"};
 
+
 int main()
 {
-    Bot bot("5324753074:AAG1Lba2yTWVZnxumJyA0e47gyrX90PiT-E");
+    Bot bot("API_TOKEN");
     const string photoFilePath = "out.jpg";
     const string photoMimeType = "image/jpeg";
 
