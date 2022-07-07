@@ -17,22 +17,21 @@
 #include <exception>
 #include <string>
 #include <tgbot/tgbot.h>
-//#include "get_weather.h"
-//#include "get_request.h"
+#include "get_weather.h"
 #include "get_currency.h"
 #include "get_time_as_str.h"
 #include "download_jpeg.h"
-
+#include "get_weather_keyboard.h"
 
 using namespace std;
 using namespace TgBot;
 
-vector<string> bot_commands= {"start", "echo", "time", "currency", "random_cat", "weather"};
+vector<string> bot_commands= {"start", "echo", "time", "currency", "random_cat", "weather", "weather_text"};
 
 
 int main()
 {
-    Bot bot("API_TOKEN");
+    Bot bot("API_KEY");
     const string photoFilePath = "out.jpg";
     const string photoMimeType = "image/jpeg";
 
@@ -46,6 +45,19 @@ int main()
     row0.push_back(usd_btn);
     row0.push_back(kazah_peso);
     keyboard->inlineKeyboard.push_back(row0);
+
+
+    InlineKeyboardMarkup::Ptr keyboard2(new InlineKeyboardMarkup);
+    vector<InlineKeyboardButton::Ptr> row1;
+    InlineKeyboardButton::Ptr msk_btn(new InlineKeyboardButton), arh_btn(new InlineKeyboardButton);
+    msk_btn -> text = "MSK weather";
+    arh_btn->callbackData = "ARH weather";
+    kazah_peso -> text = "MSK weather";
+    kazah_peso -> callbackData = "ARH weather";
+    row1.push_back(msk_btn);
+    row1.push_back(arh_btn);
+    keyboard->inlineKeyboard.push_back(row1);
+
 
     bot.getEvents().onCommand("start", [&bot](Message::Ptr message)
     {
@@ -84,13 +96,26 @@ int main()
         }
     });
 
-//    bot.getEvents().onCommand("weather",[&bot](Message::Ptr message)
-//    {
-//        bot.getApi().sendMessage(message->chat->id, "City?");
-//        bot.getEvents().onCallbackQuery([&bot](CallbackQuery::Ptr query){
-//            bot.getApi().sendMessage(query->message->chat->id, get_weather(query->message->text));
-//        });
-//    });
+
+    bot.getEvents().onCommand("weather_text",[&bot](Message::Ptr message)
+    {
+        bot.getApi().sendMessage(message->chat->id, "City?");
+        bot.getEvents().onNonCommandMessage([&bot](Message::Ptr message){
+            bot.getApi().sendMessage(message->chat->id, to_string(get_weather(message->text)));
+        }
+        );
+    });
+    bot.getEvents().onCommand("weather", [&bot, &keyboard2](Message::Ptr message){
+        bot.getApi().sendMessage(message->chat->id, "Weather in..?", false, 0, keyboard2);
+    });
+    bot.getEvents().onCallbackQuery([&bot, &keyboard2](CallbackQuery::Ptr query){
+        if (query->data == "MSK weather"){
+            bot.getApi().sendMessage(query->message->chat->id, to_string(get_weather_keyboard('m')));
+        }
+        else{
+            bot.getApi().sendMessage(query->message->chat->id, to_string(get_weather_keyboard('a')));
+        }
+    });
 
     bot.getEvents().onAnyMessage([&bot](Message::Ptr message)
     {
