@@ -1,7 +1,10 @@
-#include <stdio.h>
-#include <string>
-#include <nlohmann/json.hpp>
+#ifndef GET_CURRENCY_H
+#define GET_CURRENCY_H
 #include "get_request.h"
+#include <nlohmann/json.hpp>
+#include <stdio.h>
+
+using namespace std;
 
 float get_currency(char what)
 {
@@ -10,9 +13,9 @@ float get_currency(char what)
     if (what=='u'){
         return js_obj["Valute"]["USD"]["Value"].get<float>();
     }
-    else{
+    if (what == 'k') {
         return js_obj["Valute"]["KZT"]["Value"].get<float>();
     }
     return -1;
 }
-
+#endif

@@ -1,3 +1,5 @@
+#ifndef GET_WEATHER_H
+#define GET_WEATHER_H
 #include <stdio.h>
 #include <string>
 #include <nlohmann/json.hpp>
@@ -8,6 +10,8 @@ using namespace std;
 
 float get_weather(string city)
 {
-        auto js_obj_2 = nlohmann::json::parse(get_request("https://api.openweathermap.org/data/2.5/weather?q="+city+"&appid="+API_KEY+"));
+        string link = "https://api.openweathermap.org/data/2.5/weather?q="+city+"&appid=API_KEY";
+        auto js_obj_2 = nlohmann::json::parse(get_request(link));
         return js_obj_2["weather.main"].get<float>();
 }
+#endif

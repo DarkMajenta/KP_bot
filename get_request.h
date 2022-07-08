@@ -1,31 +1,9 @@
-#include <stdio.h>
-#include <string>
-#include <iostream>
-#include <stdio.h>
-#include <vector>
-#include <ctime>
-#include <csignal>
-#include <cstdio>
-#include <cstdlib>
-#include <exception>
+#ifndef GET_REQUEST_H
+#define GET_REQUEST_H
 #include <curl/curl.h>
+#include "Writer.h"
 
 using namespace std;
-
-static char errrorBuffer[CURL_ERROR_SIZE];
-static string buffer;
-
-static int Writer(char *buffer, size_t size, size_t nmemb, string *html)
-{
-    int result=0;
-
-    if (buffer != NULL)
-    {
-        html -> append(buffer, size*nmemb);
-        result = size*nmemb;
-    }
-    return result;
-}
 
 string get_request(string link)
 {
@@ -39,3 +17,4 @@ string get_request(string link)
     curl_easy_cleanup(curl);
     return data;
 }
+#endif

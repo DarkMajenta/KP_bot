@@ -46,17 +46,17 @@ int main()
     row0.push_back(kazah_peso);
     keyboard->inlineKeyboard.push_back(row0);
 
-
     InlineKeyboardMarkup::Ptr keyboard2(new InlineKeyboardMarkup);
     vector<InlineKeyboardButton::Ptr> row1;
     InlineKeyboardButton::Ptr msk_btn(new InlineKeyboardButton), arh_btn(new InlineKeyboardButton);
     msk_btn -> text = "MSK weather";
-    arh_btn->callbackData = "ARH weather";
-    kazah_peso -> text = "MSK weather";
-    kazah_peso -> callbackData = "ARH weather";
+    msk_btn->callbackData = "MSK weather";
+    arh_btn -> text = "ARH weather";
+    arh_btn -> callbackData = "ARH weather";
     row1.push_back(msk_btn);
     row1.push_back(arh_btn);
-    keyboard->inlineKeyboard.push_back(row1);
+    keyboard2->inlineKeyboard.push_back(row1);
+
 
 
     bot.getEvents().onCommand("start", [&bot](Message::Ptr message)
@@ -90,7 +90,7 @@ int main()
         {
             bot.getApi().sendMessage(query->message->chat->id, to_string(get_currency('u')));
         }
-        else
+        if (query->data == "Kazahstan Peso")
         {
             bot.getApi().sendMessage(query->message->chat->id, to_string(get_currency('k')));
         }
@@ -100,11 +100,14 @@ int main()
     bot.getEvents().onCommand("weather_text",[&bot](Message::Ptr message)
     {
         bot.getApi().sendMessage(message->chat->id, "City?");
-        bot.getEvents().onNonCommandMessage([&bot](Message::Ptr message){
-            bot.getApi().sendMessage(message->chat->id, to_string(get_weather(message->text)));
+        bot.getEvents().onAnyMessage([&bot](Message::Ptr message){
+            string weather___1 = to_string(get_weather(message->text));
+            bot.getApi().sendMessage(message->chat->id, weather___1);
         }
         );
     });
+
+
     bot.getEvents().onCommand("weather", [&bot, &keyboard2](Message::Ptr message){
         bot.getApi().sendMessage(message->chat->id, "Weather in..?", false, 0, keyboard2);
     });
@@ -112,7 +115,7 @@ int main()
         if (query->data == "MSK weather"){
             bot.getApi().sendMessage(query->message->chat->id, to_string(get_weather_keyboard('m')));
         }
-        else{
+        if (query->data == "ARH weather"){
             bot.getApi().sendMessage(query->message->chat->id, to_string(get_weather_keyboard('a')));
         }
     });
