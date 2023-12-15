@@ -1,5 +1,5 @@
 KP_bot/telegram_bot
-    Copyright (C) 2021  drk_mjnt
+    Copyright (C) 2021 
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
